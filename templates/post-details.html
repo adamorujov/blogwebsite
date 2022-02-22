@@ -1,0 +1,270 @@
+{% extends 'layout.html' %}
+{% block description %}
+    <meta name="description" content="">
+{% endblock %}
+{% block title %} {{ article.title }} - Blog {% endblock %}
+{% block content %}
+
+    <!-- Header -->
+    <header class="">
+      <nav class="navbar navbar-expand-lg">
+        <div class="container">
+          <a class="navbar-brand" href="{% url 'index' %}"><h2>Blog<em>.</em></h2></a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'index' %}">Home
+                  <span class="sr-only">(current)</span>
+                </a>
+              </li> 
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'about' %}">About Us</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'article:blog-entries' %}">Blog Entries</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'contact' %}">Contact Us</a>
+              </li>
+              {% if request.user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'user:logout' %}">Logout</a>
+              </li>
+              {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'user:login' %}">Login</a>
+              </li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Page Content -->
+    <!-- Banner Starts Here -->
+    <div class="heading-page header-text">
+      <section class="page-heading">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="text-content">
+                <h4>Post Detail</h4>
+                <h2>{{ article.title }}</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    
+    <!-- Banner Ends Here -->
+
+    <section class="blog-posts grid-system">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8">
+            <div class="all-blog-posts">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="blog-post">
+                    <div class="blog-thumb">
+                      <img src="{{ article.main_article_image.url }}" alt="{{ article.title }}">
+                    </div>
+                    <div class="down-content">
+                      {% if article.categories.all %}
+                      {% for category in article.categories.all %}
+                      <span>{{ category.name }}</span>
+                      {% endfor %}
+                      {% endif %}
+                      <a href="post-details.html"><h4>{{ article.title }}</h4></a>
+                      <ul class="post-info">
+                        <li><span>{{ article.author.username }}</span></li>
+                        <li><span href="#">{{ article.created_date | date:"M d, Y" }}</span></li>
+                        <li><span href="#">{{ article.comments.all | length }} Comments</span></li>
+                      </ul>
+                      {{ article.content | safe }}
+                      <div class="post-options">
+                        <div class="row">
+                          <div class="col-6">
+                            {% if article.tags.all %}
+                            <ul class="post-tags">
+                              <li><i class="fa fa-tags"></i></li>
+                              {% for tag in article.tags.all %}
+                              <li><a href="{% url 'article:tagblog' tag.id %}">{{ tag.name }}</a></li>
+                              {% endfor %}
+                            </ul>
+                            {% endif %}
+                          </div>
+                          <div class="col-6">
+                            <ul class="post-share">
+                              {% load social_share %}
+                              <li><i class="fa fa-share-alt"></i></li>
+                              <li>{% post_to_facebook article 'Facebook' %}</li> ,
+                              <li>{% post_to_twitter article.title article 'Twitter' %}</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12" id="comments">
+                  <div class="sidebar-item comments">
+                    <div class="sidebar-heading">
+                      <h2>{{ all_comments_num }} comment(s)</h2>
+                    </div>
+                    <div class="content">
+                      {% if comments %}
+                      <ul>
+                        {% for comment in comments %}
+                        <li>
+                          <div class="author-thumb">
+                            <img src="/media/avatar-1577909_960_720.png" alt="{{ comment.name }}">
+                          </div>
+                          <div class="right-content">
+                            <h4>{{ comment.name }}<span>{{ comment.pub_date | date:"M d, Y" }}</span></h4>
+                            <p>{{ comment.comment }}</p>
+                            <button type="button" class="btn btn-link" style="color:#f48840;padding:0;" onclick="
+                              document.getElementById('name').focus();
+                              document.getElementById('choice').value = 'reply';
+                              document.getElementById('to').value = '{{ comment.id }}';
+                            "
+                            >Reply</button>
+                          </div>
+                        </li>
+                        {% if comment.child_comments.all %}
+                        {% for reply in comment.child_comments.all %}
+                        <li class="replied">
+                          <div class="author-thumb">
+                            <img src="/media/avatar-1577909_960_720.png" alt="{{ reply.name }}">
+                          </div>
+                          <div class="right-content">
+                            <h4>{{ reply.name }}<span>{{ reply.pub_date | date:"M d, Y"}}</span></h4>
+                            <p>{{ reply.comment }}</p>
+                          </div>
+                        </li>
+                        {% endfor %}
+                        {% endif %}
+                        {% endfor %}
+                      </ul>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <div class="sidebar-item submit-comment">
+                    <div class="sidebar-heading">
+                      <h2>Your comment</h2>
+                    </div>
+                    <div class="content">
+                      <form id="comment" action="{% url 'article:detail' article.slug %}#comments" method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                          <input name="choice" type="hidden" id="choice" value="comment">
+                          <input name="to" type="hidden" id="to" value="comment">
+                          <div class="col-md-6 col-sm-12">
+                            <fieldset>
+                              <input name="name" type="text" id="name" placeholder="Your name" value="{{ request.user.full_name }}" required>
+                            </fieldset>
+                          </div>
+                          <div class="col-md-6 col-sm-12">
+                            <fieldset>
+                              <input name="email" type="text" id="email" placeholder="Your email" value="{{ request.user.email }}" required>
+                            </fieldset>
+                          </div>
+                          <div class="col-md-12 col-sm-12">
+                            <fieldset>
+                              <input name="subject" type="text" id="subject" placeholder="Subject" required>
+                            </fieldset>
+                          </div>
+                          <div class="col-lg-12">
+                            <fieldset>
+                              <textarea name="message" rows="6" id="message" placeholder="Type your comment" required></textarea>
+                            </fieldset>
+                          </div>
+                          <div class="col-lg-12">
+                            <fieldset>
+                              <button type="submit" id="form-submit" class="main-button">Submit</button>
+                            </fieldset>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="sidebar">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="sidebar-item search">
+                    <form id="search_form" name="gs" method="GET" action="#">
+                      <input type="text" name="q" class="searchText" placeholder="type to search..." autocomplete="on">
+                    </form>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  {% if recent_fixed_articles %}
+                  <div class="sidebar-item recent-posts">
+                    <div class="sidebar-heading">
+                      <h2>Recent Posts</h2>
+                    </div>
+                    <div class="content">
+                      <ul>
+                        {% for article in recent_fixed_articles %}
+                        <li><a href="post-details.html">
+                          <h5>{{ article.title }}</h5>
+                          <span>{{ article.created_date | date:"M d, Y" }}</span>
+                        </a></li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  </div>
+                  {% endif %}
+                </div>
+                <div class="col-lg-12">
+                  {% if categories %}
+                  <div class="sidebar-item categories">
+                    <div class="sidebar-heading">
+                      <h2>Categories</h2>
+                    </div>
+                    <div class="content">
+                      <ul>
+                        {% for category in categories %}
+                        <li><a href="{% url 'article:categoryblog' category.id %}">- {{ category.name }}</a></li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  </div>
+                  {% endif %}
+                </div>
+                <div class="col-lg-12">
+                  {% if tags %}
+                  <div class="sidebar-item tags">
+                    <div class="sidebar-heading">
+                      <h2>Tag Clouds</h2>
+                    </div>
+                    <div class="content">
+                      <ul>
+                        {% for tag in tags %}
+                        <li><a href="{% url 'article:tagblog' tag.id %}">{{ tag.name }}</a></li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+{% endblock %}

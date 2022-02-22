@@ -1,0 +1,251 @@
+{% extends 'layout.html' %}
+{% block description %}
+    <meta name="description" content="">
+{% endblock %}
+{% block title %} Recent block entries {% endblock %}
+{% block content %}
+    <!-- Header -->
+    <header class="">
+      <nav class="navbar navbar-expand-lg">
+        <div class="container">
+          <a class="navbar-brand" href="{% url 'index' %}"><h2>Blog<em>.</em></h2></a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'index' %}">Home
+                  <span class="sr-only">(current)</span>
+                </a>
+              </li> 
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'about' %}">About Us</a>
+              </li>
+              <li class="nav-item active">
+                <a class="nav-link" href="{% url 'article:blog-entries' %}">Blog Entries</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'contact' %}">Contact Us</a>
+              </li>
+              {% if request.user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'user:logout' %}">Logout</a>
+              </li>
+              {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'user:login' %}">Login</a>
+              </li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Page Content -->
+    <!-- Banner Starts Here -->
+    <div class="heading-page header-text">
+      <section class="page-heading">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="text-content">
+                <h4>Recent Posts</h4>
+                <h2>Our Recent Blog Entries</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    
+    <!-- Banner Ends Here -->
+
+    {% include 'includes/callaction.html' %}
+
+
+    <section class="blog-posts grid-system" id="blogs">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8">
+            {% if page_obj %}
+            <div class="all-blog-posts">
+              <div class="row">
+                {% for article in page_obj %}
+                <div class="col-lg-6">
+                  <div class="blog-post">
+                    <div class="blog-thumb">
+                      <img src="{{ article.article_image.url }}" alt="{{ article.title }}">
+                    </div>
+                    <div class="down-content">
+                      {% if article.categories.all %}
+                      {% for category in article.categories.all %}
+                      <span>{{ category.name }}</span>
+                      {% endfor %}
+                      {% endif %}
+                      <a href="{% url 'article:detail' article.slug %}"><h4>{{ article.title }}</h4></a>
+                      <ul class="post-info">
+                        <li><span>{{ article.author.username }}</span></li>
+                        <li><span href="#">{{ article.created_date | date:"M d, Y"}}</span></li>
+                        <li><span href="#">{{ article.comments.all | length }} Comments</span></li>
+                      </ul>
+                      {{ article.content | safe | truncatechars_html:200 }}
+                      <div class="post-options">
+                        <div class="row">
+                          <div class="col-lg-12">
+                            {% if article.tags.all %}
+                            <ul class="post-tags">
+                              <li><i class="fa fa-tags"></i></li>
+                              {% for tag in article.tags.all %}
+                              <li><a href="{% url 'article:tagblog' tag.id %}">{{ tag.name }}</a></li>
+                              {% endfor %}
+                            </ul>
+                            {% endif %}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+                <div class="col-lg-12">
+                  <ul class="page-numbers">
+                    {% if page_obj.has_previous %}
+                    <li style="width:25px;"><a href="?page={{ page_obj.previous_page_number }}" style="width:100%;"><i class="fa fa-angle-double-left"></i></a></li>
+                    {% else %}
+                    <li style="width:25px;"><span style="width:100%;"><i class="fa fa-angle-double-left"></i></span></li>
+                    {% endif %}
+
+                    {% if page_obj.number != 1 %}
+                    <li><a href="?page=1">1</a></li>
+                    <li><span>...</span></li>
+                      {% if page_obj.number != 2 %}
+                      <li><a href="?page={{ page_obj.number | add:'-1' }}">{{ page_obj.number | add:'-1' }}</a></li>
+                      {% endif %}
+                    {% endif %}
+
+                    <li class="active"><a href="?page={{ page_obj.number }}">{{ page_obj.number }}</a></li>
+                    
+                    {% if page_obj.number != page_obj.paginator.num_pages %}
+                      {% if page_obj.number != page_obj.paginator.num_pages|add:'-1' %}
+                      <li><a href="?page={{ page_obj.number }}">{{ page_obj.number|add:'1' }}</a></li>
+                      {% endif %}
+                      <li><span>...</span></li>
+                      <li><a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></li>
+                    {% endif %}
+
+                    {% if page_obj.has_next %}
+                    <li style="width:25px;"><a href="?page={{ page_obj.next_page_number }}" style="width:100%;"><i class="fa fa-angle-double-right"></i></a></li>
+                    {% else %}
+                    <li style="width:25px;"><span style="width:100%;"><i class="fa fa-angle-double-right"></i></span></li>
+                    {% endif %}
+                  </ul>
+                </div>
+              </div>
+            </div>
+            {% else %}
+            <div class="container">No results for "{{ query }}"</div>
+            {% endif %}
+          </div>
+          <div class="col-lg-4">
+            <div class="sidebar">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="sidebar-item search">
+                    <form id="search_form" name="gs" method="GET" action="{% url 'article:blog-entries' %}#blogs">
+                      <input type="text" name="q" id="search" class="searchText" placeholder="type to search..." autocomplete="on">
+                    </form>
+                    <div id="result"></div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  {% if recent_fixed_articles %}
+                  <div class="sidebar-item recent-posts">
+                    <div class="sidebar-heading">
+                      <h2>Recent Posts</h2>
+                    </div>
+                    <div class="content">
+                      <ul>
+                        {% for article in recent_fixed_articles %}
+                        <li><a href="{% url 'article:detail' article.slug %}">
+                          <h5>{{ article.title }}</h5>
+                          <span>{{ article.created_date | date:"M d, Y"}}</span>
+                        </a></li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  </div>
+                  {% endif %}
+                </div>
+                <div class="col-lg-12">
+                  {% if categories %}
+                  <div class="sidebar-item categories">
+                    <div class="sidebar-heading">
+                      <h2>Categories</h2>
+                    </div>
+                    <div class="content">
+                      <ul>
+                        {% for category in categories %}
+                        <li><a href="{% url 'article:categoryblog' category.id%}">- {{ category.name }}</a></li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  </div>
+                  {% endif %}
+                </div>
+                <div class="col-lg-12">
+                  {% if tags %}
+                  <div class="sidebar-item tags">
+                    <div class="sidebar-heading">
+                      <h2>Tag Clouds</h2>
+                    </div>
+                    <div class="content">
+                      <ul>
+                        {% for tag in tags %}
+                        <li><a href="{% url 'article:tagblog' tag.id %}">{{ tag.name }}</a></li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+{% endblock %}
+
+{% block javascript %}
+
+<script>
+
+    $("#search").on("input", function(){
+      $.ajax({
+        type: 'GET',
+        //dataType: 'json',
+        data: {
+          q: $("#search").val(),
+        },
+        success: function(data){
+          var searchingText = ""
+          for (var i=0; i < data.length; i++){
+            searchingText = searchingText + `<div class='alert border mt-3'><b><a href='article/detail/${data[i].slug}/' style='color:#f48840;'>${data[i].title}</a></b></div>`;
+          }
+          if ($("#search").val() != ""){
+            $("#result").html(searchingText);
+          }
+        },
+
+        error: function(res){
+          $("#result").text(res);
+        }
+      });
+    });
+
+</script>
+
+{% endblock %}

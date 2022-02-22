@@ -1,0 +1,338 @@
+{% extends 'layout.html' %}
+
+{% block style %}
+<style>
+    body{
+        margin:0;
+        color:#f48840;
+        /*font:600 16px/18px 'Open Sans',sans-serif;*/
+      }
+      *,:after,:before{box-sizing:border-box}
+      .clearfix:after,.clearfix:before{content:'';display:table}
+      .clearfix:after{clear:both;display:block}
+      a{color:inherit;text-decoration:none}
+      
+      .login-wrap{
+        width:100%;
+        margin:auto;
+        /*max-width:525px;*/
+        min-height:670px;
+        position:relative;
+        /*background:url(https://images.unsplash.com/photo-1453928582365-b6ad33cbcf64?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTZ8fGJsb2clMjBiYWNrZ3JvdW5kfGVufDB8fDB8fA%3D%3D&w=1000&q=80) no-repeat center;*/
+        background-size: 100%;
+        box-shadow:0 12px 15px 0 rgba(0,0,0,.24),0 17px 50px 0 rgba(0,0,0,.19);
+      }
+      .login-html{
+        width:100%;
+        height:100%;
+        position:absolute;
+        padding:90px 70px 50px 70px;
+        background:rgba(40,57,101,.9);
+        margin:auto;
+      }
+      .login-html .sign-in-htm,
+      .login-html .sign-up-htm{
+        top:0;
+        left:0;
+        right:0;
+        bottom:0;
+        position:absolute;
+        transform:rotateY(180deg);
+        backface-visibility:hidden;
+        transition:all .4s linear;
+      }
+      .login-html .sign-in,
+      .login-html .sign-up,
+      .login-form .group .check{
+        display:none;
+      }
+      .login-html .tab,
+      .login-form .group .label,
+      .login-form .group .button{
+        text-transform:uppercase;
+      }
+      .login-html .tab{
+        font-size:22px;
+        margin-right:15px;
+        padding-bottom:5px;
+        margin:0 15px 10px 0;
+        display:inline-block;
+        border-bottom:2px solid transparent;
+      }
+      .login-html .sign-in:checked + .tab,
+      .login-html .sign-up:checked + .tab{
+        color:#f48840;
+        border-color:#f48840;
+      }
+      .login-html .sign-in + .tab,
+      .login-html .sign-up + .tab{
+        color:white;
+      }
+      .login-form{
+        min-height:345px;
+        position:relative;
+        perspective:1000px;
+        transform-style:preserve-3d;
+      }
+      .login-form .group{
+        margin-bottom:15px;
+      }
+      .login-form .group .label,
+      .login-form .group .input,
+      .login-form .group .button{
+        width:100%;
+        color:#fff;
+        display:block;
+      }
+      .login-form .group .input,
+      .login-form .group .button{
+        border:none;
+        padding:15px 20px;
+        border-radius:25px;
+        background:rgba(255,255,255,.1);
+      }
+      .login-form .group input[data-type="password"]{
+        text-security:circle;
+        -webkit-text-security:circle;
+      }
+      .login-form .group .label{
+        /*color:#f48840;*/
+        font-size:12px;
+      }
+      .login-form .group .button{
+        background:#f48840;
+      }
+      .login-form .group label .icon{
+        width:15px;
+        height:15px;
+        border-radius:2px;
+        position:relative;
+        display:inline-block;
+        background:rgba(255,255,255,.1);
+      }
+      .login-form .group label .icon:before,
+      .login-form .group label .icon:after{
+        content:'';
+        width:10px;
+        height:2px;
+        background:#fff;
+        position:absolute;
+        transition:all .2s ease-in-out 0s;
+      }
+      .login-form .group label .icon:before{
+        left:3px;
+        width:5px;
+        bottom:6px;
+        transform:scale(0) rotate(0);
+      }
+      .login-form .group label .icon:after{
+        top:6px;
+        right:0;
+        transform:scale(0) rotate(0);
+      }
+      .login-form .group .check:checked + label{
+        color:#fff;
+      }
+      .login-form .group .check:checked + label .icon{
+        background:#f48840;
+      }
+      .login-form .group .check:checked + label .icon:before{
+        transform:scale(1) rotate(45deg);
+      }
+      .login-form .group .check:checked + label .icon:after{
+        transform:scale(1) rotate(-45deg);
+      }
+      
+      .login-html .sign-in:checked + .tab + .sign-up + .tab + .login-form .sign-in-htm{
+        transform:rotate(0);
+      }
+      .login-html .sign-up:checked + .tab + .login-form .sign-up-htm{
+        transform:rotate(0);
+      }
+      
+      .hr{
+        height:2px;
+        margin:60px 0 50px 0;
+        background:rgba(255,255,255,.2);
+      }
+      .foot-lnk1{
+        text-align:center;
+      }
+      .foot-lnk2{
+        text-align:center;
+      }
+      .foot-lnk1 a:hover, .foot-lnk2 a:hover, .foot-lnk1 label:hover{
+        color: white;
+        cursor: pointer;
+      }
+      button:hover{
+        cursor: pointer;
+      }
+      @media only screen and (min-width: 700px){
+        .login-wrap{
+          width:75%;
+          margin:auto;
+          /*max-width:525px;*/
+          min-height:670px;
+          position:relative;
+          /*background:url(https://images.unsplash.com/photo-1453928582365-b6ad33cbcf64?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTZ8fGJsb2clMjBiYWNrZ3JvdW5kfGVufDB8fDB8fA%3D%3D&w=1000&q=80) no-repeat center;*/
+          background-size: 100%;
+          background-opacity: 0.5;
+          box-shadow:0 12px 15px 0 rgba(0,0,0,.24),0 17px 50px 0 rgba(0,0,0,.19);
+        }
+      }
+      @media only screen and (min-width: 850px){
+        .login-wrap{
+          width:50%;
+          margin:auto;
+          /*max-width:525px;*/
+          /*min-height:670px;*/
+          position:relative;
+          /*background:url(https://images.unsplash.com/photo-1453928582365-b6ad33cbcf64?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTZ8fGJsb2clMjBiYWNrZ3JvdW5kfGVufDB8fDB8fA%3D%3D&w=1000&q=80) no-repeat center;*/
+          background-size: 100%;
+          background-opacity: 0.5;
+          box-shadow:0 12px 15px 0 rgba(0,0,0,.24),0 17px 50px 0 rgba(0,0,0,.19);
+        }
+      }
+      @media only screen and (min-width: 430px){
+        .foot-lnk1{
+          text-align:center;
+          float:left;
+        }
+        .foot-lnk2{
+          text-align:center;
+          float:right;
+        }
+      }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="login-wrap">
+    <div class="login-html">
+      <input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1" class="tab">Sign In</label>
+      <input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab">Sign Up</label>
+      <div class="login-form" id="loginForm">
+        <form class="sign-in-htm" method="POST" onsubmit="return validateSignIn()" novalidate>
+          {% csrf_token %}
+          <input id="hidden1" type="hidden" name="choice" value="signin">
+          <div class="group">
+            <label for="user1" class="label">Username</label>
+            <input id="user1" type="text" name="username1" class="input">
+          </div>
+          <div class="group">
+            <label for="pass1" class="label">Password</label>
+            <input id="pass1" type="password" name="password1" class="input" data-type="password">
+          </div>
+          <div class="group">
+            <input id="check1" type="checkbox" name="check" class="check" checked>
+            <label for="check1"><span class="icon"></span> Keep me Signed in</label>
+          </div>
+          <div class="group">
+            <div class="error" id="errorIn1"></div>
+            {% if messages %}
+              {% for message in messages %}
+              <div class="error" id="errorIn2">{{ message }}</div>
+              {% endfor %}
+            {% endif %}
+          </div>
+          <div class="group">
+            <button id="submitin" type="submit" class="button">Sign in</button>
+          </div>
+          <div class="hr"></div>
+          <div class="foot-lnk1">
+            <a href="#forgot">Forgot Password?</a>
+          </div>
+          <div class="foot-lnk2">
+            <a href="{% url 'index' %}">Back to home page</a>
+          </div>
+        </form>
+        <form class="sign-up-htm" method="POST" onsubmit="return validateSignUp()" novalidate>
+          {% csrf_token %}
+          <input id="hidden2" type="hidden" name="choice" value="signup">
+          <div class="group">
+            <label for="user2" class="label">Username</label>
+            <input id="user2" type="text" name="username2" class="input">
+          </div>
+          <div class="group">
+            <label for="email" class="label">Email Address</label>
+            <input id="email" type="text" name="email" class="input">
+          </div>
+          <div class="group">
+            <label for="pass2" class="label">Password</label>
+            <input id="pass2" type="password" name="password2" class="input" data-type="password">
+          </div>
+          <div class="group">
+            <label for="pass3" class="label">Repeat Password</label>
+            <input id="pass3" type="password" name="password3" class="input" data-type="password">
+          </div>
+          <div class="group">
+            <div class="error" id="errorIn2"></div>
+            {% if messages %}
+               {% for message in messages %}
+               <div class="error" id="errorIn2"></div>
+               {% endfor %}
+            {% endif %}
+          </div>
+          <div class="group">
+            <button type="submit" class="button">Sign Up</button>
+          </div>
+          <!--<div class="hr"></div>-->
+          <div class="foot-lnk1">
+            <label for="tab-1">Already Member?</a>
+          </div>
+          <div class="foot-lnk2">
+            <a href="{% url 'index' %}">Back to home page</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block javascript %}
+<script>
+  function validateSignIn(){
+    const userInput = document.getElementById("user1");
+    const passInput = document.getElementById("pass1");
+    const errorDiv = document.getElementById("errorIn1");
+
+    if(userInput.value === ""){
+      errorDiv.innerHTML = "Please, fill up the username field.";
+      return false;
+    }
+    else if(passInput.value === ""){
+      errorDiv.innerHTML = "Please, fill up the password field.";
+      return false;
+    }
+  }
+
+  function validateSignUp(){
+    const userInput = document.getElementById("user2");
+    const emailInput = document.getElementById("email");
+    const passInput1 = document.getElementById("pass2");
+    const passInput2 = document.getElementById("pass3");
+    const errorDiv = document.getElementById("errorIn2");
+
+    if(userInput.value === ""){
+      errorDiv.innerHTML = "Please, fill up the username field.";
+      return false;
+    }
+    else if(emailInput.value === ""){
+      errorDiv.innerHTML = "Please, fill up the email field.";
+      return false;
+    }
+    else if(passInput1.value === ""){
+      errorDiv.innerHTML = "Please, fill up the password field.";
+      return false;
+    }
+    else if(passInput2.value === ""){
+      errorDiv.innerHTML = "Please, fill up the repeat password field.";
+      return false;
+    }
+  }
+
+</script>
+{% endblock %}

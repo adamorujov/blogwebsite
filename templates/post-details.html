@@ -83,8 +83,8 @@
                       <a href="post-details.html"><h4>{{ article.title }}</h4></a>
                       <ul class="post-info">
                         <li><span>{{ article.author.username }}</span></li>
-                        <li><span href="#">{{ article.created_date | date:"M d, Y" }}</span></li>
-                        <li><span href="#">{{ article.comments.all | length }} Comments</span></li>
+                        <li><span>{{ article.created_date | date:"M d, Y" }}</span></li>
+                        <li><span>{{ article.article_comments.all | length }} Comments</span></li>
                       </ul>
                       {{ article.content | safe }}
                       <div class="post-options">
@@ -123,7 +123,7 @@
                         {% for comment in comments %}
                         <li>
                           <div class="author-thumb">
-                            <img src="/media/avatar-1577909_960_720.png" alt="{{ comment.name }}">
+                            <img src="https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png" alt="{{ comment.name }}">
                           </div>
                           <div class="right-content">
                             <h4>{{ comment.name }}<span>{{ comment.pub_date | date:"M d, Y" }}</span></h4>
@@ -140,7 +140,7 @@
                         {% for reply in comment.child_comments.all %}
                         <li class="replied">
                           <div class="author-thumb">
-                            <img src="/media/avatar-1577909_960_720.png" alt="{{ reply.name }}">
+                            <img src="https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png" alt="{{ reply.name }}">
                           </div>
                           <div class="right-content">
                             <h4>{{ reply.name }}<span>{{ reply.pub_date | date:"M d, Y"}}</span></h4>

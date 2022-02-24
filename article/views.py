@@ -77,8 +77,8 @@ class HomeView(View):
             return redirect("index")
 
 def confirm(request):
-    sub = Subscriber.objects.get(email=request.GET['email'])
-    if sub.conf_num == request.GET['conf_num']:
+    sub = Subscriber.objects.get(email=request.GET.get('email'))
+    if sub.conf_num == request.GET.get('conf_num'):
         sub.confirmed = True
         sub.save()
         messages.success(request, "Your subscription confirmed successfully.")

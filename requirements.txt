@@ -8,7 +8,8 @@ django-social-share==2.2.1
 Pillow==9.0.1
 python-http-client==3.3.6
 pytz==2021.3
-sendgrid==3.6.5
+sendgrid==6.9.6
 sendgrid-django==4.2.0
 sqlparse==0.4.2
+starkbank-ecdsa==2.0.3
 tzdata==2021.5

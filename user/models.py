@@ -35,7 +35,7 @@ class Newsletter(models.Model):
                 to_emails = sub.email,
                 subject = self.subject,
                 html_content=contents + (
-                    '<br><a href="{}/delete/?email={}&conf_num={}">Unsubscribe</a>.').format(
+                    '<br><br>To unsubscribe from this newsletter and stop receiving emails from us <a href="{}/delete/?email={}&conf_num={}">click here</a>.').format(
                         request.build_absolute_uri('/delete/'),
                         sub.email,
                         sub.conf_num

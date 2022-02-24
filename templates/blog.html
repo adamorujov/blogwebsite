@@ -87,8 +87,8 @@
                       <a href="{% url 'article:detail' article.slug %}"><h4>{{ article.title }}</h4></a>
                       <ul class="post-info">
                         <li><span>{{ article.author.username }}</span></li>
-                        <li><span href="#">{{ article.created_date | date:"M d, Y"}}</span></li>
-                        <li><span href="#">{{ article.comments.all | length }} Comments</span></li>
+                        <li><span>{{ article.created_date | date:"M d, Y"}}</span></li>
+                        <li><span>{{ article.article_comments.all | length }} Comments</span></li>
                       </ul>
                       {{ article.content | safe | truncatechars_html:200 }}
                       <div class="post-options">
